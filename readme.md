@@ -14,6 +14,27 @@ check if cpu is isolated
 - set isolcpus kernel cmd param if needed in file `/boot/limine.conf`
 `isolcpus=2,8 nohz_full=2,8`
 
+### Run cmds
+- start pinger
+
+```
+java   --enable-native-access=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -cp build/libs/jitterTrace-1.0-SNAPSHOT-all.jar org.isaiahp.Pinger
+```
+```
+java   --enable-native-access=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -cp build/libs/jitterTrace-1.0-SNAPSHOT-all.jar org.isaiahp.PingListener
+```
+
+
+- Capture AOT data
+
+`-XX:AOTCacheOutput=pinger.aot`
+
+`-XX:AOTCacheOutput=pinglistener.aot`
+
+
+- After Training run to use AOT cache
+
+`java   -XX:AOTCache=pingerListener.aot --enable-native-access=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -cp build/libs/jitterTrace-1.0-SNAPSHOT-all.jar org.isaiahp.PingListener`
 
 ### set affinity 
 * manually use taskset `taskset -pc 1,2 <tid>`
