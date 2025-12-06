@@ -32,8 +32,7 @@ int main(int argc, char *argv[]) {
     xBytes::concurrent::AtomicBytesView atomic_buffer {memory, 128};
 
     atomic_buffer.set_uint64(0, 0, std::memory_order_relaxed);
-    std::atomic_thread_fence(std::memory_order_release);
-    std::atomic<uint64_t>* atomic_int = atomic_buffer.get_atomic(0);
+    std::atomic<uint64_t>* atomic_int = atomic_buffer.get_atomic_at(0);
 
     
     const uint32_t n = 5;

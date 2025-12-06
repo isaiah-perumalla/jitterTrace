@@ -11,6 +11,9 @@ set required frequecy
 check if cpu is isolated
 `dcat /sys/devices/system/cpu/isolate`
 
+- set isolcpus kernel cmd param if needed in file `/boot/limine.conf`
+`isolcpus=2,8 nohz_full=2,8`
+
 
 ### set affinity 
 * manually use taskset `taskset -pc 1,2 <tid>`

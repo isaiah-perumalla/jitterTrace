@@ -17,7 +17,7 @@ namespace xBytes
          */
         struct AtomicBytesView
         {
-            AtomicBytesView(std::uint8_t *buffer, std::size_t length) : buffer{buffer},
+            AtomicBytesView(std::uint8_t*& buffer, std::size_t length) : buffer{buffer},
                                                                         length{static_cast<uint32_t>(length)}
             {
                 memset(buffer, static_cast<std::size_t>(length), 0);
@@ -31,23 +31,27 @@ namespace xBytes
             
 
         public:
+            uint32_t capacity() {
+                return length;
+            }
+            
             void set_uint64(uint32_t index, uint64_t val, std::memory_order ordering) {
                 //check alignment
-                std::atomic<uint64_t> *dest = get_atomic(index);
+                std::atomic<uint64_t> *dest = get_atomic_at(index);
                 dest->store(val, ordering);
             }
 
-            std::atomic<uint64_t>* get_atomic(uint32_t index)
+            std::atomic<uint64_t>* get_atomic_at(uint32_t index)
             {
-                void *ptr = ((char*)buffer + index);
+                void *ptr = ((uint8_t*)buffer + index);
                 static_assert(alignof(std::atomic<uint64_t>) == alignof(uint64_t));
                 assert(alignof(std::atomic<uint64_t>) == alignof(ptr));
                 std::atomic<uint64_t> *dest = static_cast<std::atomic<uint64_t> *>(ptr);
                 return dest;
             }
-            
+
             uint64_t get_uint64(uint32_t index, std::memory_order ordering) {
-                std::atomic<uint64_t>* at = get_atomic(index);
+                std::atomic<uint64_t>* at = get_atomic_at(index);
                 return at->load(ordering);
             }
 
